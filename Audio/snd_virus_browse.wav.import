@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/snd_virus_browse.wav-b7b637a28400e1814665c96c0d29e5f1.sample"
+
+[deps]
+
+source_file="res://Audio/snd_virus_browse.wav"
+dest_files=[ "res://.import/snd_virus_browse.wav-b7b637a28400e1814665c96c0d29e5f1.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

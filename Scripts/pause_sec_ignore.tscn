@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = \"text\"
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	UniTime.connect(\"temp_pause\",self,\"on_UniTime_temp_pause\")
+	pass # Replace with function body.
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+func on_UniTime_temp_pause(state):
+	get_parent().pause_mode = ([Node.PAUSE_MODE_INHERIT,Node.PAUSE_MODE_PROCESS])[int(state)]
+"
+
+[node name="pause_sec_ignore" type="Node"]
+script = SubResource( 1 )

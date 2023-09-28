@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/snd_loading.wav-d447e17353f97fcc58e207e77ceb42aa.sample"
+
+[deps]
+
+source_file="res://Audio/snd_loading.wav"
+dest_files=[ "res://.import/snd_loading.wav-d447e17353f97fcc58e207e77ceb42aa.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

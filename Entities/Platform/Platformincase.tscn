@@ -1,0 +1,116 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Entities/Platform/Platform2.gd" type="Script" id=1]
+[ext_resource path="res://Entities/Item.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Sprites/platform.png" type="Texture" id=3]
+[ext_resource path="res://Sprites/spike.png" type="Texture" id=4]
+[ext_resource path="res://Entities/Platform/Spike.gd" type="Script" id=5]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 1, 0.125 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 22, 14 )
+
+[sub_resource type="Animation" id=3]
+resource_name = "READY"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "false"
+length = 0.333333
+step = 0.0833333
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.0833333, 0.166667, 0.25 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 3, 2, 1, 0 ]
+}
+
+[sub_resource type="Animation" id=5]
+resource_name = "true"
+length = 0.333333
+step = 0.0833333
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.0833333, 0.166667, 0.25 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3 ]
+}
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource( 1 )
+width = 5
+texture = ExtResource( 3 )
+
+[node name="Platform" type="KinematicBody2D" parent="." groups=[
+"GameObject",
+]]
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape2D" parent="Platform"]
+position = Vector2( 0, -14 )
+scale = Vector2( 80, 16 )
+shape = SubResource( 1 )
+
+[node name="ColorRect" type="ColorRect" parent="Platform/CollisionShape"]
+visible = false
+margin_left = -0.527
+margin_top = -0.485
+margin_right = 0.473
+margin_bottom = 0.515
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Item" parent="Platform" instance=ExtResource( 2 )]
+
+[node name="Spike" type="Area2D" parent="Platform" groups=[
+"spike",
+]]
+script = ExtResource( 5 )
+
+[node name="Sprite" type="Sprite" parent="Platform/Spike"]
+scale = Vector2( 4, 4 )
+texture = ExtResource( 4 )
+offset = Vector2( 0, -3.5 )
+hframes = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform/Spike"]
+position = Vector2( 0, -14 )
+shape = SubResource( 2 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Platform/Spike"]
+autoplay = "READY"
+anims/READY = SubResource( 3 )
+anims/false = SubResource( 4 )
+anims/true = SubResource( 5 )
+
+[node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="."]
+position = Vector2( -2.38419e-007, 48 )
+scale = Vector2( 1.6, 3.2 )
+[connection signal="body_entered" from="Platform/Item" to="." method="_on_Item_body_entered"]
+[connection signal="body_entered" from="Platform/Spike" to="Platform/Spike" method="_on_Spike_body_entered"]

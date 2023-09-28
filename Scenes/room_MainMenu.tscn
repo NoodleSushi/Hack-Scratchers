@@ -1,0 +1,259 @@
+[gd_scene load_steps=15 format=2]
+
+[ext_resource path="res://Sprites/title.png" type="Texture" id=1]
+[ext_resource path="res://Scenes/room_MainMenu.gd" type="Script" id=2]
+[ext_resource path="res://Scripts/MainMenu/title.gd" type="Script" id=3]
+[ext_resource path="res://Entities/MainMenu/Matrix Particles.gd" type="Script" id=4]
+[ext_resource path="res://Audio/title.wav" type="AudioStream" id=5]
+[ext_resource path="res://Sprites/animation/the cats/blue-sheet.png" type="Texture" id=6]
+[ext_resource path="res://Sprites/exit.png" type="Texture" id=7]
+[ext_resource path="res://Sprites/pipboy.png" type="Texture" id=8]
+[ext_resource path="res://Sprites/animation/the cats/orange.png" type="Texture" id=9]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform bool make_white = false;
+uniform float trans = 1.0;
+
+void fragment(){
+	COLOR = make_white ? mix(texture(TEXTURE,UV),vec4(vec3(1.0),texture(TEXTURE,UV).a),trans) : texture(TEXTURE,UV);
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+shader_param/make_white = false
+shader_param/trans = 1.0
+
+[sub_resource type="ShaderMaterial" id=3]
+shader = SubResource( 1 )
+shader_param/make_white = false
+shader_param/trans = 1.0
+
+[sub_resource type="Animation" id=4]
+resource_name = "Ready"
+length = 2.33333
+step = 0.0833333
+tracks/0/type = "value"
+tracks/0/path = NodePath("Center/blue-sheet0:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.0833333, 0.166667, 0.25, 0.333333, 0.416667, 0.5, 0.583333, 0.666667, 0.75, 0.833333, 0.916667, 1, 1.08333, 1.16667, 1.25, 1.33333, 1.41667, 1.5, 1.58333, 1.66667, 1.75, 1.83333, 1.91667, 2, 2.08333, 2.16667 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 8, 9, 10, 11, 12, 13, 14, 10, 11, 12, 13, 14, 10, 11, 12, 13, 14, 10, 11, 12, 13, 14, 10, 11, 12, 13, 14 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Center/blue-sheet1:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.0833333, 0.166667, 0.25, 0.333333, 0.416667, 0.5, 0.583333, 0.666667, 0.75, 0.833333, 0.916667, 1, 1.08333, 1.16667, 1.25, 1.33333, 1.41667, 1.5, 1.58333, 1.66667, 1.75, 1.83333, 1.91667, 2, 2.08333, 2.16667 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 8, 9, 10, 11, 12, 13, 14, 10, 11, 12, 13, 14, 10, 11, 12, 13, 14, 10, 11, 12, 13, 14, 10, 11, 12, 13, 14 ]
+}
+tracks/2/type = "method"
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 1.41667 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "proceed"
+} ]
+}
+
+[sub_resource type="Animation" id=5]
+length = 3.0
+step = 0.05
+tracks/0/type = "bezier"
+tracks/0/path = NodePath("CenterTOP/title:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( -512, -0.165253, -543.017, 0.165253, 543.017, 0, -0.330504, 67.6188, 0.330504, -67.6188 ),
+"times": PoolRealArray( 0.3, 0.7 )
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("CenterTOP/title:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.3, 0.6 ),
+"transitions": PoolRealArray( 1, 2.37841, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/2/type = "audio"
+tracks/2/path = NodePath("AudioStreamPlayer")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 5 )
+} ],
+"times": PoolRealArray( 0.2 )
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Center/blue-sheet0:material:shader_param/trans")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 1.0 ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Center/blue-sheet1:material:shader_param/trans")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 1.0 ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("Center/blue-sheet0:material:shader_param/make_white")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("Center/blue-sheet1:material:shader_param/make_white")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[node name="Main" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Matrix Particles" type="Control" parent="."]
+anchor_right = 1.0
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterTOP" type="Control" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="title" type="Sprite" parent="CenterTOP"]
+self_modulate = Color( 1, 1, 1, 0 )
+position = Vector2( -512, 32 )
+scale = Vector2( 0.4, 0.4 )
+texture = ExtResource( 1 )
+offset = Vector2( 0, 311 )
+script = ExtResource( 3 )
+
+[node name="Center" type="Control" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="blue-sheet0" type="Sprite" parent="Center"]
+material = SubResource( 2 )
+position = Vector2( -224, 96 )
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 6 )
+offset = Vector2( 5, 0 )
+vframes = 6
+hframes = 5
+frame = 8
+
+[node name="Sprite" type="Sprite" parent="Center/blue-sheet0"]
+position = Vector2( 0, 128 )
+scale = Vector2( 4, 4 )
+texture = ExtResource( 8 )
+vframes = 2
+region_enabled = true
+region_rect = Rect2( 96, 256, 48, 24 )
+
+[node name="blue-sheet1" type="Sprite" parent="Center"]
+material = SubResource( 3 )
+position = Vector2( 224, 96 )
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 9 )
+offset = Vector2( 5, 0 )
+vframes = 6
+hframes = 5
+frame = 8
+
+[node name="Sprite" type="Sprite" parent="Center/blue-sheet1"]
+position = Vector2( 0, 128 )
+scale = Vector2( 4, 4 )
+texture = ExtResource( 8 )
+vframes = 2
+region_enabled = true
+region_rect = Rect2( 96, 256, 48, 24 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "START"
+anims/Ready = SubResource( 4 )
+anims/START = SubResource( 5 )
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 5 )
+
+[node name="Button" type="Button" parent="."]
+margin_left = 32.0
+margin_top = 32.0
+margin_right = 96.0
+margin_bottom = 96.0
+rect_min_size = Vector2( 64, 64 )
+icon = ExtResource( 7 )
+flat = true
+expand_icon = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="pressed" from="Button" to="." method="_on_Button_pressed"]

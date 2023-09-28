@@ -1,0 +1,26 @@
+[gd_resource type="AudioBusLayout" load_steps=3 format=2]
+
+[sub_resource type="AudioEffectDelay" id=1]
+resource_name = "Delay"
+tap1/active = false
+tap1/delay_ms = 167.0
+tap2/active = false
+tap2/delay_ms = 333.0
+feedback/active = true
+feedback/delay_ms = 167.0
+
+[sub_resource type="AudioEffectAmplify" id=2]
+resource_name = "Amplify"
+volume_db = 2.86
+
+[resource]
+bus/1/name = "Delay"
+bus/1/solo = false
+bus/1/mute = false
+bus/1/bypass_fx = false
+bus/1/volume_db = 0.0
+bus/1/send = "Master"
+bus/1/effect/0/effect = SubResource( 1 )
+bus/1/effect/0/enabled = true
+bus/1/effect/1/effect = SubResource( 2 )
+bus/1/effect/1/enabled = true

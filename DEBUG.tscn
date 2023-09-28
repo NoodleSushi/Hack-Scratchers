@@ -1,0 +1,241 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Fonts/monogram.ttf" type="DynamicFontData" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends CanvasLayer
+# Declare member variables here. Examples:
+# var a = 2
+# var b = \"text\"
+
+# Called when the node enters the scene tree for the first time.
+onready var size : Vector2 = $PARENT/HBoxContainer/ColorRect.rect_min_size
+var debug_mode : bool = false setget set_debug_mode
+var chart : PoolRealArray = PoolRealArray()
+var debug_draw : int = 0 setget set_debug_draw
+var debug_collision : bool = false
+var debug_navigation : bool = false
+onready var data_range : int = size.x
+var time_scale = 1
+
+func _unhandled_input(event : InputEvent) -> void:
+	if event is InputEventKey && event.pressed:
+		if event.scancode == KEY_F1:
+			set_debug_mode(!debug_mode)
+		if !debug_mode: return
+		match event.scancode:
+			KEY_F3:
+				time_scale *= .5
+				time_scale = clamp(time_scale,0.125,2)
+				Engine.time_scale = time_scale
+			KEY_F4:
+				time_scale *= 2
+				time_scale = clamp(time_scale,0.125,2)
+				Engine.time_scale = time_scale
+			KEY_F12:
+				get_tree().reload_current_scene()
+
+func set_debug_draw(val):
+	get_viewport().debug_draw = val
+	#$PARENT/HBoxContainer/VBoxContainer/Text2.set_text(([\"DEBUG_DRAW_DISABLED\",\"DEBUG_DRAW_UNSHADED\",\"DEBUG_DRAW_OVERDRAW\"])[val])
+	debug_draw = val
+	
+
+func set_debug_mode(val):
+	if val:
+		VisualServer.connect(\"frame_pre_draw\",self,\"pre\")
+	else:
+		VisualServer.disconnect(\"frame_pre_draw\",self,\"pre\")
+	$PARENT.set_visible(val)
+	debug_mode = val
+
+func _ready() -> void:
+	$PARENT.set_visible(debug_mode)
+	for i in range(data_range):
+		chart.append(0.0)
+
+func pre() -> void:
+	var text : String = \"\"
+	text += \"Objects Drawn: \"+str(VisualServer.get_render_info(VisualServer.INFO_OBJECTS_IN_FRAME))
+	text += \"\\nMaterial Changes: \"+str(VisualServer.get_render_info(VisualServer.INFO_MATERIAL_CHANGES_IN_FRAME))
+	text += \"\\nShader Changes: \"+str(VisualServer.get_render_info(VisualServer.INFO_SHADER_CHANGES_IN_FRAME))
+	text += \"\\nSurface Changes: \"+str(VisualServer.get_render_info(VisualServer.INFO_SURFACE_CHANGES_IN_FRAME))
+	text += \"\\nDraw Calls: \"+str(VisualServer.get_render_info(VisualServer.INFO_DRAW_CALLS_IN_FRAME))
+	text += \"\\nVertices Drawn: \"+str(VisualServer.get_render_info(VisualServer.INFO_VERTICES_IN_FRAME))
+	$PARENT/ObjectsDrawn.set_text(text)
+
+func _process(delta : float) -> void:
+	if !debug_mode: return
+	update_chart(delta)
+	$PARENT/HBoxContainer/EngineTime.text = \"TimeScale = \"+str(Engine.time_scale)
+
+func update_chart(delta : float) -> void:
+	var average : float = 0
+	var current_fps : float = 0 if delta == 0 else 1.0/delta 
+	if delta == 0: return
+	var largest : float = 0.0
+	var lowest : float = 1e10
+	for i in range(data_range-1):
+		chart[i] = chart[i+1]
+		average += chart[i]
+		if chart[i] > largest: largest = chart[i]
+		if chart[i] < lowest: lowest = chart[i]
+	chart[data_range-1] = current_fps
+	average += chart[data_range-1]
+	if chart[data_range-1] > largest: largest = chart[data_range-1]
+	if chart[data_range-1] < lowest: lowest = chart[data_range-1]
+	var points : PoolVector2Array = PoolVector2Array()
+	var i : float = 0.0
+	for data in chart:
+		points.append(Vector2(i/(data_range-1),data/largest if largest > 0 else 0)*size)
+		i += 1.0
+	points.append_array([Vector2(size.x,0),Vector2(0,0)])
+	$PARENT/HBoxContainer/ColorRect/Line2D.set_polygon(points)
+	var low : float = (lowest/largest if largest > 0 else 0) * size.y
+	$PARENT/HBoxContainer/ColorRect/LOW.set_points(PoolVector2Array([Vector2(0,low),Vector2(size.x,low)]))
+	average /= data_range
+	var avg : float = (average/largest if largest > 0 else 0) * size.y
+	$PARENT/HBoxContainer/ColorRect/AVG.set_points(PoolVector2Array([Vector2(0,avg),Vector2(size.x,avg)]))
+	#$PARENT/HBoxContainer/Text.set_text(\"HGH: \"+str(floor(largest))+\"CUR: \"+str(floor(current_fps))+\"FPS\\nLOW: \"+str(floor(lowest))+\"FPS\"+\"AVG: \"+str(floor(average))+\"FPS\")
+	$PARENT/HBoxContainer/Text.set_text(\"HGH: \"+str(floor(largest))+\"FPS\\nLOW: \"+str(floor(lowest))+\"FPS\\nCUR: \"+str(floor(current_fps))+\"FPS\\nAVG: \"+str(floor(average))+\"FPS\")
+"
+
+[sub_resource type="DynamicFont" id=2]
+extra_spacing_top = -4
+extra_spacing_bottom = -2
+font_data = ExtResource( 1 )
+
+[sub_resource type="Theme" id=3]
+default_font = SubResource( 2 )
+
+[sub_resource type="DynamicFont" id=4]
+use_mipmaps = true
+extra_spacing_bottom = -8
+font_data = ExtResource( 1 )
+
+[node name="DEBUG" type="CanvasLayer"]
+pause_mode = 2
+layer = 128
+script = SubResource( 1 )
+
+[node name="PARENT" type="HBoxContainer" parent="."]
+modulate = Color( 1, 1, 1, 0.513726 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = SubResource( 3 )
+custom_constants/separation = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ObjectsDrawn" type="Label" parent="PARENT"]
+visible = false
+margin_right = 24.0
+margin_bottom = 7.0
+grow_horizontal = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "TEXT"
+
+[node name="ColorRect" type="ColorRect" parent="PARENT/ObjectsDrawn"]
+show_behind_parent = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 1 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PARENT"]
+margin_right = 192.0
+margin_bottom = 48.0
+size_flags_vertical = 0
+custom_constants/separation = 0
+
+[node name="ColorRect" type="ColorRect" parent="PARENT/HBoxContainer"]
+margin_right = 144.0
+margin_bottom = 48.0
+grow_horizontal = 0
+grow_vertical = 0
+rect_min_size = Vector2( 144, 48 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+color = Color( 0, 0, 0, 1 )
+
+[node name="Line2D" type="Polygon2D" parent="PARENT/HBoxContainer/ColorRect"]
+position = Vector2( 0, 48 )
+scale = Vector2( 1, -1 )
+color = Color( 0.4, 0.501961, 1, 1 )
+
+[node name="LOW" type="Line2D" parent="PARENT/HBoxContainer/ColorRect"]
+position = Vector2( 0, 48 )
+scale = Vector2( 1, -1 )
+width = 1.0
+default_color = Color( 1, 0, 0, 1 )
+
+[node name="AVG" type="Line2D" parent="PARENT/HBoxContainer/ColorRect"]
+position = Vector2( 0, 48 )
+scale = Vector2( 1, -1 )
+width = 1.0
+default_color = Color( 0, 1, 0, 1 )
+texture_mode = 252577298
+
+[node name="Text" type="Label" parent="PARENT/HBoxContainer"]
+margin_left = 144.0
+margin_right = 168.0
+margin_bottom = 48.0
+grow_horizontal = 0
+size_flags_horizontal = 0
+size_flags_vertical = 3
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+text = "TEXT
+TEXT"
+
+[node name="ColorRect2" type="ColorRect" parent="PARENT/HBoxContainer/Text"]
+show_behind_parent = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="EngineTime" type="Label" parent="PARENT/HBoxContainer"]
+margin_left = 168.0
+margin_right = 192.0
+margin_bottom = 48.0
+size_flags_vertical = 1
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+text = "SLOW"
+
+[node name="ColorRect2" type="ColorRect" parent="PARENT/HBoxContainer/EngineTime"]
+show_behind_parent = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Line2D" type="Polygon2D" parent="PARENT/HBoxContainer/EngineTime/ColorRect2"]
+position = Vector2( 0, 48 )
+scale = Vector2( 1, -1 )
+color = Color( 0.4, 0.501961, 1, 1 )
+
+[node name="LOW" type="Line2D" parent="PARENT/HBoxContainer/EngineTime/ColorRect2"]
+position = Vector2( 0, 48 )
+scale = Vector2( 1, -1 )
+width = 1.0
+default_color = Color( 1, 0, 0, 1 )
+
+[node name="AVG" type="Line2D" parent="PARENT/HBoxContainer/EngineTime/ColorRect2"]
+position = Vector2( 0, 48 )
+scale = Vector2( 1, -1 )
+width = 1.0
+default_color = Color( 0, 1, 0, 1 )
+texture_mode = 252577298

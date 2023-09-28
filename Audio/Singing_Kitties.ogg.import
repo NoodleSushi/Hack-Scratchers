@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/Singing_Kitties.ogg-a8fa3510665032509364a4a709211c00.oggstr"
+
+[deps]
+
+source_file="res://Audio/Singing_Kitties.ogg"
+dest_files=[ "res://.import/Singing_Kitties.ogg-a8fa3510665032509364a4a709211c00.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=10.213

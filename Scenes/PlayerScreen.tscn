@@ -1,0 +1,596 @@
+[gd_scene load_steps=52 format=2]
+
+[ext_resource path="res://Scenes/PlayerGame.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scenes/Mother.gd" type="Script" id=2]
+[ext_resource path="res://Sprites/pipboy.png" type="Texture" id=3]
+[ext_resource path="res://Scripts/GUI/Interface.gd" type="Script" id=4]
+[ext_resource path="res://Scripts/GUI/CoinCounter.gd" type="Script" id=5]
+[ext_resource path="res://Sprites/items/items petit.png" type="Texture" id=6]
+[ext_resource path="res://Scripts/GUI/Select_Pointer.gd" type="Script" id=7]
+[ext_resource path="res://Scripts/GUI/Health.gd" type="Script" id=8]
+[ext_resource path="res://Sprites/pip_glow/pip_glow1.png" type="Texture" id=9]
+[ext_resource path="res://Sprites/pip_glow/pip_glow2.png" type="Texture" id=10]
+[ext_resource path="res://Sprites/pip_glow/pip_glow4.png" type="Texture" id=11]
+[ext_resource path="res://Sprites/pip_glow/pip_glow3.png" type="Texture" id=12]
+[ext_resource path="res://Entities/GUI/Cost.tscn" type="PackedScene" id=13]
+[ext_resource path="res://Entities/GUI/Level.tscn" type="PackedScene" id=14]
+[ext_resource path="res://Scripts/GUI/FireballDirection.gd" type="Script" id=15]
+[ext_resource path="res://Entities/GUI/Counter.tscn" type="PackedScene" id=16]
+[ext_resource path="res://Audio/snd_loading.ogg" type="AudioStream" id=17]
+[ext_resource path="res://Sprites/animation/game overs/burn/000.png" type="Texture" id=18]
+[ext_resource path="res://Sprites/animation/game overs/burn/001.png" type="Texture" id=19]
+[ext_resource path="res://Sprites/animation/game overs/void/003.png" type="Texture" id=20]
+[ext_resource path="res://Sprites/animation/game overs/void/007.png" type="Texture" id=21]
+[ext_resource path="res://Sprites/animation/game overs/void/001.png" type="Texture" id=22]
+[ext_resource path="res://Sprites/animation/game overs/void/000.png" type="Texture" id=23]
+[ext_resource path="res://Sprites/animation/game overs/void/004.png" type="Texture" id=24]
+[ext_resource path="res://Sprites/animation/game overs/void/005.png" type="Texture" id=25]
+[ext_resource path="res://Sprites/animation/game overs/void/006.png" type="Texture" id=26]
+[ext_resource path="res://Sprites/animation/game overs/void/002.png" type="Texture" id=27]
+[ext_resource path="res://Sprites/animation/winner/blue/000.png" type="Texture" id=28]
+[ext_resource path="res://Sprites/animation/winner/blue/003.png" type="Texture" id=29]
+[ext_resource path="res://Sprites/animation/winner/blue/001.png" type="Texture" id=30]
+[ext_resource path="res://Sprites/animation/winner/blue/002.png" type="Texture" id=31]
+[ext_resource path="res://Sprites/animation/winner/blue/004.png" type="Texture" id=32]
+[ext_resource path="res://Sprites/animation/winner/blue/005.png" type="Texture" id=33]
+[ext_resource path="res://Sprites/animation/winner/blue/006.png" type="Texture" id=34]
+[ext_resource path="res://Sprites/animation/winner/orange/001.png" type="Texture" id=35]
+[ext_resource path="res://Sprites/animation/winner/orange/002.png" type="Texture" id=36]
+[ext_resource path="res://Sprites/animation/winner/orange/003.png" type="Texture" id=37]
+[ext_resource path="res://Sprites/animation/winner/orange/004.png" type="Texture" id=38]
+[ext_resource path="res://Sprites/animation/winner/orange/000.png" type="Texture" id=39]
+[ext_resource path="res://Sprites/animation/winner/orange/005.png" type="Texture" id=40]
+[ext_resource path="res://Sprites/animation/winner/orange/006.png" type="Texture" id=41]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform int index : hint_range(0,2) = 0;
+
+void fragment(){
+	COLOR = vec4(.0);
+	if (abs(UV.x - (1.0+float(index*2))/6.0) <= 1.0/10.0){
+		COLOR = vec4(1.0,.0,.0,0.25);
+	}
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+shader_param/index = 0
+
+[sub_resource type="SpriteFrames" id=3]
+animations = [ {
+"frames": [ ExtResource( 9 ), ExtResource( 10 ), ExtResource( 12 ), ExtResource( 11 ) ],
+"loop": true,
+"name": "default",
+"speed": 8.0
+} ]
+
+[sub_resource type="Animation" id=4]
+resource_name = "DEF"
+tracks/0/type = "value"
+tracks/0/path = NodePath("StrikeOverlay:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ) ]
+}
+
+[sub_resource type="Animation" id=5]
+resource_name = "Hit"
+tracks/0/type = "bezier"
+tracks/0/path = NodePath("StrikeOverlay:color:r")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("StrikeOverlay:color:g")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/2/type = "bezier"
+tracks/2/path = NodePath("StrikeOverlay:color:b")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/3/type = "bezier"
+tracks/3/path = NodePath("StrikeOverlay:color:a")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"points": PoolRealArray( 1, -0.25, 0, 0.047817, -1.06258, 0, -0.167614, 0.129743, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.5 )
+}
+
+[sub_resource type="Animation" id=6]
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ null ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("ColorRect:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=7]
+loop = true
+step = 0.0833333
+tracks/0/type = "value"
+tracks/0/path = NodePath("ColorRect:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:texture")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.0833333, 0.166667, 0.25, 0.333333, 0.416667, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ ExtResource( 28 ), ExtResource( 30 ), ExtResource( 31 ), ExtResource( 29 ), ExtResource( 32 ), ExtResource( 33 ), ExtResource( 34 ) ]
+}
+
+[sub_resource type="Animation" id=8]
+length = 0.333333
+loop = true
+step = 0.0833333
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.166667 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ ExtResource( 18 ), ExtResource( 19 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("ColorRect:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[sub_resource type="Animation" id=9]
+loop = true
+step = 0.0833333
+tracks/0/type = "value"
+tracks/0/path = NodePath("ColorRect:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:texture")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.0833333, 0.166667, 0.25, 0.333333, 0.416667, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ ExtResource( 39 ), ExtResource( 35 ), ExtResource( 36 ), ExtResource( 37 ), ExtResource( 38 ), ExtResource( 40 ), ExtResource( 41 ) ]
+}
+
+[sub_resource type="Animation" id=10]
+length = 0.833333
+loop = true
+step = 0.0833333
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.0833333, 0.166667, 0.25, 0.333333, 0.416667, 0.5, 0.583333 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ ExtResource( 23 ), ExtResource( 22 ), ExtResource( 27 ), ExtResource( 20 ), ExtResource( 24 ), ExtResource( 25 ), ExtResource( 26 ), ExtResource( 21 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("ColorRect:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[node name="Mother" type="Control"]
+margin_right = 511.0
+margin_bottom = 720.0
+size_flags_horizontal = 3
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="snd_loading" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 17 )
+
+[node name="ViewportContainer" type="ViewportContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Viewport" type="Viewport" parent="ViewportContainer"]
+size = Vector2( 511, 720 )
+handle_input_locally = false
+render_target_update_mode = 3
+audio_listener_enable_2d = true
+
+[node name="Game" parent="ViewportContainer/Viewport" instance=ExtResource( 1 )]
+
+[node name="FireballDirection" type="Control" parent="."]
+visible = false
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+size_flags_horizontal = 7
+size_flags_vertical = 3
+script = ExtResource( 15 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="FireballDirection"]
+material = SubResource( 2 )
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_right = 289.0
+
+[node name="GUI" type="Control" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Interface" type="Sprite" parent="GUI"]
+position = Vector2( -31.5, 144 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 3 )
+offset = Vector2( 0, -32 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 160, 64 )
+script = ExtResource( 4 )
+enable_noise = false
+
+[node name="LifeCounter" type="Node2D" parent="GUI/Interface"]
+position = Vector2( -80, 7.62939e-006 )
+scale = Vector2( 0.5, 0.5 )
+script = ExtResource( 8 )
+
+[node name="Tween" type="Tween" parent="GUI/Interface/LifeCounter"]
+
+[node name="Select_Interface" type="Node2D" parent="GUI/Interface"]
+
+[node name="Select_Left" type="Sprite" parent="GUI/Interface/Select_Interface"]
+position = Vector2( -55.75, -56 )
+texture = ExtResource( 3 )
+vframes = 2
+region_enabled = true
+region_rect = Rect2( 0, 64, 48, 32 )
+
+[node name="Select_Right" type="Sprite" parent="GUI/Interface/Select_Interface"]
+position = Vector2( 8.25, -56 )
+texture = ExtResource( 3 )
+vframes = 2
+region_enabled = true
+region_rect = Rect2( 48, 64, 48, 32 )
+
+[node name="Select_Pointer" type="Sprite" parent="GUI/Interface/Select_Interface"]
+position = Vector2( -24, -56 )
+texture = ExtResource( 3 )
+vframes = 3
+region_enabled = true
+region_rect = Rect2( 96, 64, 48, 48 )
+script = ExtResource( 7 )
+
+[node name="Tween" type="Tween" parent="GUI/Interface/Select_Interface/Select_Pointer"]
+
+[node name="SelectScreens" type="Node2D" parent="GUI/Interface/Select_Interface"]
+position = Vector2( -24, 0 )
+
+[node name="PlatformScreen" type="Node2D" parent="GUI/Interface/Select_Interface/SelectScreens"]
+visible = false
+
+[node name="Counter" parent="GUI/Interface/Select_Interface/SelectScreens/PlatformScreen" instance=ExtResource( 16 )]
+position = Vector2( 0, -24.7141 )
+scale = Vector2( 2.5, 2.5 )
+
+[node name="Button" type="Sprite" parent="GUI/Interface/Select_Interface/SelectScreens/PlatformScreen"]
+position = Vector2( 0, -10.7166 )
+scale = Vector2( 0.75, 0.75 )
+texture = ExtResource( 3 )
+vframes = 2
+region_enabled = true
+region_rect = Rect2( 160, 128, 32, 48 )
+
+[node name="Display" type="Sprite" parent="GUI/Interface/Select_Interface/SelectScreens/PlatformScreen"]
+position = Vector2( 0, -30.5176 )
+scale = Vector2( 3.16597, 3.16597 )
+texture = ExtResource( 3 )
+region_enabled = true
+region_rect = Rect2( 0, 240, 15, 5 )
+
+[node name="SpikeScreen" type="Node2D" parent="GUI/Interface/Select_Interface/SelectScreens"]
+
+[node name="Counter" parent="GUI/Interface/Select_Interface/SelectScreens/SpikeScreen" instance=ExtResource( 16 )]
+position = Vector2( 43.6806, -13.7378 )
+scale = Vector2( 1.57647, 1.57647 )
+
+[node name="Button" type="Sprite" parent="GUI/Interface/Select_Interface/SelectScreens/SpikeScreen"]
+position = Vector2( 0, -10.7166 )
+scale = Vector2( 0.75, 0.75 )
+texture = ExtResource( 3 )
+vframes = 2
+region_enabled = true
+region_rect = Rect2( 160, 128, 32, 48 )
+
+[node name="Display" type="Sprite" parent="GUI/Interface/Select_Interface/SelectScreens/SpikeScreen"]
+position = Vector2( 0, -30.5176 )
+scale = Vector2( 4, 4 )
+texture = ExtResource( 3 )
+vframes = 2
+region_enabled = true
+region_rect = Rect2( 32, 240, 19, 11 )
+
+[node name="FireballScreen" type="Node2D" parent="GUI/Interface/Select_Interface/SelectScreens"]
+visible = false
+
+[node name="Whole" type="Node2D" parent="GUI/Interface/Select_Interface/SelectScreens/FireballScreen"]
+
+[node name="ColumnSelect" type="Sprite" parent="GUI/Interface/Select_Interface/SelectScreens/FireballScreen/Whole"]
+visible = false
+texture = ExtResource( 3 )
+offset = Vector2( 0, -32 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 112, 64 )
+
+[node name="Select_Left" type="Sprite" parent="GUI/Interface/Select_Interface/SelectScreens/FireballScreen/Whole/ColumnSelect"]
+position = Vector2( -31.75, -56 )
+texture = ExtResource( 3 )
+vframes = 2
+region_enabled = true
+region_rect = Rect2( 0, 256, 48, 32 )
+
+[node name="Select_Right" type="Sprite" parent="GUI/Interface/Select_Interface/SelectScreens/FireballScreen/Whole/ColumnSelect"]
+position = Vector2( 32.25, -56 )
+texture = ExtResource( 3 )
+vframes = 2
+region_enabled = true
+region_rect = Rect2( 48, 256, 48, 32 )
+
+[node name="Label" type="Sprite" parent="GUI/Interface/Select_Interface/SelectScreens/FireballScreen/Whole/ColumnSelect"]
+position = Vector2( 0, -56 )
+texture = ExtResource( 3 )
+offset = Vector2( 0, 2 )
+region_enabled = true
+region_rect = Rect2( 80, 240, 48, 16 )
+
+[node name="ButtonDisplay" type="Sprite" parent="GUI/Interface/Select_Interface/SelectScreens/FireballScreen/Whole"]
+position = Vector2( 0, -24 )
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 3 )
+vframes = 2
+region_enabled = true
+region_rect = Rect2( 128, 192, 32, 64 )
+
+[node name="Counter" parent="GUI/Interface/Select_Interface/SelectScreens/FireballScreen" instance=ExtResource( 16 )]
+position = Vector2( 0, -24.7141 )
+scale = Vector2( 2.5, 2.5 )
+
+[node name="Loading" type="Node2D" parent="GUI/Interface"]
+visible = false
+position = Vector2( -24, 0 )
+
+[node name="BG" type="Sprite" parent="GUI/Interface/Loading"]
+position = Vector2( 0, -32 )
+texture = ExtResource( 3 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 112, 64 )
+
+[node name="UPGRADE" type="Sprite" parent="GUI/Interface/Loading"]
+visible = false
+position = Vector2( 0, -36 )
+texture = ExtResource( 3 )
+region_enabled = true
+region_rect = Rect2( 0, 224, 105, 16 )
+
+[node name="HACK" type="Sprite" parent="GUI/Interface/Loading"]
+position = Vector2( 0, -36 )
+scale = Vector2( 3.5, 3.5 )
+texture = ExtResource( 3 )
+region_enabled = true
+region_rect = Rect2( 0, 240, 28, 5 )
+
+[node name="SECONDS" type="Sprite" parent="GUI/Interface/Loading"]
+position = Vector2( 2.62791, -16 )
+texture = ExtResource( 3 )
+region_enabled = true
+region_rect = Rect2( 104, 120, 36, 8 )
+
+[node name="COUNT" type="Sprite" parent="GUI/Interface/Loading/SECONDS"]
+position = Vector2( -24, -4 )
+texture = ExtResource( 3 )
+centered = false
+hframes = 10
+region_enabled = true
+region_rect = Rect2( 104, 112, 40, 8 )
+
+[node name="Indicators" type="Node2D" parent="GUI/Interface"]
+
+[node name="Level" parent="GUI/Interface/Indicators" instance=ExtResource( 14 )]
+position = Vector2( 64, -56 )
+original_position = Vector2( 64, -56 )
+
+[node name="Level2" parent="GUI/Interface/Indicators" instance=ExtResource( 14 )]
+modulate = Color( 1, 1, 1, 0 )
+position = Vector2( 64, -40 )
+original_position = Vector2( 64, -40 )
+
+[node name="Level3" parent="GUI/Interface/Indicators" instance=ExtResource( 14 )]
+position = Vector2( 64, -24 )
+original_position = Vector2( 64, -24 )
+
+[node name="SELECT0" type="Sprite" parent="GUI/Interface/Indicators"]
+position = Vector2( 40, -56 )
+texture = ExtResource( 3 )
+region_enabled = true
+region_rect = Rect2( 144, 80, 16, 16 )
+
+[node name="SELECT2" type="Sprite" parent="GUI/Interface/Indicators"]
+position = Vector2( 40, -24 )
+texture = ExtResource( 3 )
+region_enabled = true
+region_rect = Rect2( 144, 80, 16, 16 )
+
+[node name="CoinCounter" type="Node2D" parent="GUI/Interface/Indicators"]
+position = Vector2( 48, -16 )
+script = ExtResource( 5 )
+num = 0
+blink = false
+
+[node name="Tween" type="Tween" parent="GUI/Interface/Indicators/CoinCounter"]
+
+[node name="Upgrade" type="Sprite" parent="GUI/Interface/Indicators"]
+position = Vector2( 80, -64 )
+texture = ExtResource( 3 )
+centered = false
+vframes = 2
+hframes = 4
+region_enabled = true
+region_rect = Rect2( 0, 128, 160, 96 )
+
+[node name="Glow" type="AnimatedSprite" parent="GUI/Interface/Indicators/Upgrade"]
+visible = false
+position = Vector2( 24, 24 )
+frames = SubResource( 3 )
+frame = 3
+playing = true
+
+[node name="Item" type="Sprite" parent="GUI/Interface/Indicators/Upgrade"]
+position = Vector2( 24, 25 )
+texture = ExtResource( 6 )
+hframes = 4
+
+[node name="Cost" parent="GUI/Interface/Indicators/Upgrade" instance=ExtResource( 13 )]
+position = Vector2( 5, 33 )
+cost = 0
+blink = false
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "DEF"
+anims/DEF = SubResource( 4 )
+anims/Hit = SubResource( 5 )
+
+[node name="StrikeOverlay" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 1, 1, 1, 0 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect" type="TextureRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+expand = true
+stretch_mode = 6
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="TextureRect"]
+autoplay = "Null"
+anims/Null = SubResource( 6 )
+anims/blue = SubResource( 7 )
+anims/fire = SubResource( 8 )
+anims/orange = SubResource( 9 )
+anims/void = SubResource( 10 )
+
+[node name="ColorRect" type="ColorRect" parent="TextureRect"]
+visible = false
+show_behind_parent = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.0509804, 0.0235294, 0.0627451, 0.713726 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="tween_completed" from="GUI/Interface/Indicators/CoinCounter/Tween" to="GUI/Interface/Indicators/CoinCounter" method="_on_Tween_tween_completed"]
