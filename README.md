@@ -1,4 +1,4 @@
-# Hack-Scratchers
+# Hack Scratchers
 Hack Scratchers is an action platformer wherein 2 cat burglars climb their respective towers to the death, dodging traps setup by their enemy cat on the other tower.
 
 The traps can be upgraded by collecting coins and virus boxes to give the opposing player a harder time, and when things get really rough, the players also have the option to clear all hazards present on screen with a virus clear.
