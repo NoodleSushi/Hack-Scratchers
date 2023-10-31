@@ -9,6 +9,10 @@ Last Cat Standing Wins.
 
 ![img](https://github.com/NoodleSushi/Hack-Scratchers/assets/34954180/c5eb5db7-ffaf-4b63-a192-a20b3cb0302a)
 
+# Developer Notes
+- This game requires two players and two gamepad controllers to play.
+- The button layout scheme is based on the PlayStation layout.
+
 # Project Setup
 Install the latest Godot Engine 3.2 release
 
