@@ -14,7 +14,7 @@ Last Cat Standing Wins.
 - The button layout scheme is based on the PlayStation layout.
 
 # Project Setup
-Install the latest [Godot Engine 3.2](https://godotengine.org/download/archive/3.2.3-stable/) release
+Install the latest [Godot Engine 3.2.x](https://godotengine.org/download/archive/3.2.3-stable/) release
 
 # Credits
 - Art assets by Hannah Tagra.
