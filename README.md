@@ -19,3 +19,4 @@ Install the latest [Godot Engine 3.2.x](https://godotengine.org/download/archive
 # Credits
 - Art assets by Hannah Tagra.
 - Game Design by Jason Cabuenos.
+- OST inspiration from ["Singing Kitties" by Rathergood](https://www.youtube.com/watch?v=nr-SZXIVvuo&t=31s)
